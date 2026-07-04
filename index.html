@@ -456,24 +456,6 @@
     color:var(--gold);
     padding:0 4px;
   }
-  .away-banner{
-    text-align:center;
-    padding:60px 20px;
-    font-family:var(--font-head);
-    font-size:42px;
-    letter-spacing:.04em;
-    color:var(--gold-soft);
-    text-shadow:0 3px 12px rgba(0,0,0,0.4);
-  }
-  .away-banner .sub-line{
-    display:block;
-    font-family:var(--font-body);
-    font-size:13px;
-    color:var(--sub);
-    font-weight:600;
-    margin-top:10px;
-    letter-spacing:0;
-  }
   @media (max-width:560px){
     .vs-wrap{flex-direction:column;}
     .vs-badge{padding:2px 0;}
@@ -559,11 +541,24 @@
   .admin-deadline-label{
     color:var(--danger);
     font-weight:800;
-    font-size:14px;
-    margin:20px 0 8px;
-    padding-left:2px;
+    font-size:20px;
+    text-align:center;
+    text-shadow:0 2px 6px rgba(0,0,0,0.4);
+    margin:24px 0 10px;
+    padding-left:0;
   }
   .admin-deadline-label:first-child{margin-top:0;}
+  .admin-deadline-label-blue{color:#5fa8f5;}
+
+  .card-tint-red{
+    background:rgba(200,90,70,0.4);
+    border-color:rgba(220,110,90,0.55);
+  }
+  .card-tint-blue{
+    background:rgba(70,120,200,0.4);
+    border-color:rgba(90,140,220,0.55);
+  }
+
 
   .lock-box{
     text-align:center;
@@ -849,6 +844,10 @@
         <div class="rule-text">무승부 경기는 <b>승점에 반영하지 않습니다.</b></div>
       </div>
       <div class="rule-row">
+        <div class="rule-badge">원정매칭</div>
+        <div class="rule-text">원정 매칭일 경우 참여선수는 전원 <b>승점 3점</b>을 획득합니다.</div>
+      </div>
+      <div class="rule-row">
         <div class="rule-badge">🪽 페어플레이</div>
         <div class="rule-text">매주 팀별로 선정된 페어플레이 선수는 소속 팀 순위 점수에 <b>+1점</b> 보너스를 받습니다. <b>동점표가 나오면 동점자 전원</b>이 보너스를 받습니다. <b>경기종료 후 한 시간내로 페어플레이어를 선정해주세요.</b></div>
       </div>
@@ -910,8 +909,8 @@
 
     <div id="adminContent" style="display:none;">
 
-      <div class="admin-deadline-label">경기 하루 전까지 입력</div>
-      <div class="card">
+      <div class="card card-tint-red">
+        <div class="admin-deadline-label">경기 하루 전까지 입력</div>
         <h2><span class="num">⚔️</span>이 주의 매치 설정</h2>
 
         <div class="field-group">
@@ -938,18 +937,17 @@
         <div class="field-group">
           <div class="field-label"><span class="chip">C팀 (선택)</span> 팀원 명단</div>
           <textarea id="matchTeam3" placeholder="C팀 매치가 없으면 비워두세요"></textarea>
-          <div class="hint">쉼표(,) 또는 줄바꿈으로 여러 명을 구분해서 입력하세요. C팀을 비워두면 2팀 대진표로 표시됩니다.</div>
+          <div class="hint">쉼표(,) 또는 줄바꿈으로 여러 명을 구분해서 입력하세요. C팀을 비워두면 2팀 대진표로 표시됩니다. A팀만 입력하고 저장하면 [이 주의 매치] 탭에 "원정매칭"으로 표시됩니다.</div>
         </div>
         <div class="save-row">
           <span class="toast" id="matchToast"></span>
           <button class="btn ghost" id="matchResetBtn">🔄 대진표 초기화</button>
-          <button class="btn ghost" id="awayBtn">✈️ 원정매칭으로 설정</button>
           <button class="btn" id="matchSaveBtn">대진표 저장</button>
         </div>
       </div>
 
-      <div class="admin-deadline-label">경기 종료 후 입력</div>
-      <div class="card">
+      <div class="card card-tint-blue">
+        <div class="admin-deadline-label admin-deadline-label-blue">경기 종료 후 입력</div>
         <div class="admin-top">
           <h2 style="margin:0;"><span class="num">✏️</span>이번 주 점수 입력</h2>
           <button class="btn ghost" id="lockBtn">잠그기</button>
@@ -1660,11 +1658,6 @@ async function renderMatch(){
     dateNote.textContent = `경기 날짜: ${match.date}`;
   }
 
-  if(match.mode === 'away'){
-    display.innerHTML = `<div class="away-banner">✈️ 원정매칭<span class="sub-line">이번 주는 원정 경기가 진행됩니다</span></div>`;
-    return;
-  }
-
   const teams = (match.teams || []).filter(t => t && t.length > 0);
   if(teams.length === 0){
     display.innerHTML = '<div class="board-empty">이번 주 매치를 편성 중입니다.<br>잠시만 기다려 주세요!</div>';
@@ -1704,9 +1697,10 @@ async function renderMatch(){
       const badge = thisWeekFairplay.has(m) ? ` <span class="team-member-badge" title="이번 주 페어플레이어">🪽</span>` : '';
       return `<div class="team-member">${escapeHtml(m)}${badge}</div>`;
     }).join('');
-    const winningClass = (winningTeamIdx !== null && winningTeamIdx === idx) ? ' team-col-winner' : '';
+    const isAwayMatch = teams.length === 1;
+    const winningClass = (!isAwayMatch && winningTeamIdx !== null && winningTeamIdx === idx) ? ' team-col-winner' : '';
     const teamLabelName = teamLabels[idx] || String.fromCharCode(65+idx)+'팀';
-    const topLabel = winningClass ? 'WINNER' : teamLabelName;
+    const topLabel = isAwayMatch ? '원정매칭' : (winningClass ? 'WINNER' : teamLabelName);
     const labelClass = winningClass ? 'team-label team-label-winner' : 'team-label';
     return `
     <div class="team-col${winningClass}">
@@ -2274,9 +2268,9 @@ document.getElementById('matchSaveBtn').addEventListener('click', async ()=>{
   const teams = [t1, t2, t3].filter(t => t.length > 0);
 
   const toast = document.getElementById('matchToast');
-  if(teams.length < 2){
+  if(teams.length < 1){
     toast.style.color = '#f0a58f';
-    toast.textContent = '최소 2팀 이상의 명단을 입력해주세요.';
+    toast.textContent = '최소 A팀 명단은 입력해주세요.';
     return;
   }
 
@@ -2301,30 +2295,6 @@ document.getElementById('matchSaveBtn').addEventListener('click', async ()=>{
   }else{
     toast.style.color = '#f0a58f';
     toast.textContent = '저장에 실패했습니다. 다시 시도해주세요.';
-  }
-  setTimeout(()=>{ toast.textContent=''; }, 4000);
-});
-
-document.getElementById('awayBtn').addEventListener('click', async ()=>{
-  const date = document.getElementById('matchWeekDate').value || new Date().toISOString().slice(0,10);
-  document.getElementById('matchDate').value = date;
-
-  const toast = document.getElementById('matchToast');
-  const ok = await saveMatch({ mode: 'away', date, teams: [] });
-  await clearFairplayVotes();
-  await saveFairplayClosed(false);
-  await saveMatchUpdatedFlag(false);
-  await saveMatchIsPast(false);
-  await saveWinningTeamIdx(null);
-  document.getElementById('fpTeam1').value = '';
-  document.getElementById('fpTeam2').value = '';
-  document.getElementById('fpTeam3').value = '';
-  if(ok){
-    toast.style.color = 'var(--gold-soft)';
-    toast.textContent = '✅ 이 주의 매치가 원정매칭으로 설정되었습니다.';
-  }else{
-    toast.style.color = '#f0a58f';
-    toast.textContent = '설정에 실패했습니다. 다시 시도해주세요.';
   }
   setTimeout(()=>{ toast.textContent=''; }, 4000);
 });
