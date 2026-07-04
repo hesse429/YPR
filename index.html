@@ -239,6 +239,21 @@
   .rank-badge{font-size:16px;}
   .rank-score{font-weight:800;color:var(--gold-soft);font-size:16px;}
   .rank-score span{font-size:11px;color:var(--sub);font-weight:500;margin-left:2px;}
+  .final-winner-row{
+    background:rgba(232,184,75,0.14);
+    border-radius:10px;
+    box-shadow:inset 0 0 0 1px rgba(232,184,75,0.4);
+  }
+  .final-winner-tag{
+    font-size:11px;
+    font-weight:800;
+    color:var(--ink);
+    background:var(--gold);
+    padding:3px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+    box-shadow:0 0 12px rgba(232,184,75,0.5);
+  }
   .board-head{
     display:flex;
     justify-content:space-between;
@@ -258,6 +273,20 @@
     letter-spacing:.01em;
   }
   .match-date-note:empty{display:none;}
+  .match-update-badge{
+    font-family:var(--font-head);
+    font-weight:400;
+    font-size:15px;
+    letter-spacing:.02em;
+    color:#ff7a4d;
+    text-shadow:0 0 10px rgba(255,122,77,0.6);
+    vertical-align:middle;
+    animation:matchUpdatePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes matchUpdatePulse{
+    0%, 100%{opacity:1;}
+    50%{opacity:0.55;}
+  }
   .quote-note{
     font-size:12.5px;
     font-style:italic;
@@ -297,6 +326,16 @@
     white-space:pre-line;
     font-weight:600;
   }
+  .notice-banner-standby{
+    background:rgba(255,255,255,0.04);
+    border-color:rgba(255,255,255,0.1);
+  }
+  .notice-text-standby{
+    color:var(--sub);
+    font-weight:400;
+    font-style:italic;
+    font-size:13px;
+  }
   .vs-wrap{
     display:flex;
     align-items:stretch;
@@ -312,13 +351,32 @@
     padding:16px 12px;
     text-align:center;
   }
+  .team-col-winner{
+    background:rgba(232,184,75,0.14);
+    border:1px solid rgba(232,184,75,0.5);
+    box-shadow:0 0 16px rgba(232,184,75,0.25);
+  }
+  .team-label-winner{
+    color:#ffffff !important;
+    -webkit-text-stroke:1px #7a4a12;
+    text-shadow:
+      -1px -1px 0 #7a4a12,
+      1px -1px 0 #7a4a12,
+      -1px 1px 0 #7a4a12,
+      1px 1px 0 #7a4a12,
+      0 2px 4px rgba(0,0,0,0.35);
+  }
   .team-col .team-label{
-    font-size:12px;
+    font-size:15px;
     font-weight:800;
-    letter-spacing:.06em;
-    color:var(--gold-soft);
+    letter-spacing:.04em;
+    color:var(--ink);
+    background:var(--gold);
     text-transform:uppercase;
-    margin-bottom:10px;
+    padding:7px 0;
+    border-radius:8px;
+    margin-bottom:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.3);
   }
   .team-col .team-member{
     font-size:14.5px;
@@ -327,6 +385,7 @@
     border-top:1px dashed var(--line);
   }
   .team-col .team-member:first-of-type{border-top:none;}
+  .team-member-badge{font-size:14px;}
 
   .fp-vote-box{
     margin-top:14px;
@@ -738,14 +797,14 @@
   <!-- ============ TAB: THIS WEEK'S MATCH ============ -->
   <div class="panel active" id="panel-match">
     <div class="card" id="noticeCard" style="display:none;">
-      <div class="notice-banner">
-        <span class="notice-icon">📢</span>
+      <div class="notice-banner" id="noticeBanner">
+        <span class="notice-icon" id="noticeIcon">📢</span>
         <div class="notice-text" id="noticeText"></div>
       </div>
     </div>
     <div class="card">
       <div class="board-head">
-        <h2 style="margin:0;"><span class="num">⚔️</span>이 주의 매치</h2>
+        <h2 style="margin:0;"><span class="num">⚔️</span><span id="matchHeadingText">이 주의 매치</span> <span class="match-update-badge" id="matchUpdateBadge" style="display:none;">🔥 Match update!</span></h2>
         <div class="match-date-note" id="matchDateNote"></div>
       </div>
       <div id="matchDisplay"><div class="board-empty">불러오는 중...</div></div>
@@ -790,7 +849,7 @@
         <div class="rule-text">무승부 경기는 <b>승점에 반영하지 않습니다.</b></div>
       </div>
       <div class="rule-row">
-        <div class="rule-badge">🤝 페어플레이</div>
+        <div class="rule-badge">🪽 페어플레이</div>
         <div class="rule-text">매주 팀별로 선정된 페어플레이 선수는 소속 팀 순위 점수에 <b>+1점</b> 보너스를 받습니다. <b>동점표가 나오면 동점자 전원</b>이 보너스를 받습니다. <b>경기종료 후 한 시간내로 페어플레이어를 선정해주세요.</b></div>
       </div>
       <div class="rule-row">
@@ -814,7 +873,7 @@
           <tr><td class="place">4회</td><td>🏆 트로피</td></tr>
           <tr><td class="place">5회</td><td>👑 왕관</td></tr>
           <tr><td class="place">6회 이상</td><td>👽 외계인</td></tr>
-          <tr><td class="place">이 주의 페어플레이어</td><td>🤝 악수</td></tr>
+          <tr><td class="place">이 주의 페어플레이어</td><td>🪽 날개</td></tr>
         </tbody>
       </table>
     </div>
@@ -869,17 +928,17 @@
           <div class="hint">여기서 입력한 날짜는 [이 주의 매치] 탭에 표시되고, 아래 '이번 주 점수 입력'의 경기 날짜와 자동으로 동일하게 맞춰집니다.</div>
         </div>
         <div class="field-group">
-          <div class="field-label"><span class="chip">1팀</span> 팀원 명단</div>
+          <div class="field-label"><span class="chip">A팀</span> 팀원 명단</div>
           <textarea id="matchTeam1" placeholder="예: 홍길동, 김철수, 이영희"></textarea>
         </div>
         <div class="field-group">
-          <div class="field-label"><span class="chip">2팀</span> 팀원 명단</div>
+          <div class="field-label"><span class="chip">B팀</span> 팀원 명단</div>
           <textarea id="matchTeam2" placeholder="예: 박민수, 최지훈"></textarea>
         </div>
         <div class="field-group">
-          <div class="field-label"><span class="chip">3팀 (선택)</span> 팀원 명단</div>
-          <textarea id="matchTeam3" placeholder="3팀 매치가 없으면 비워두세요"></textarea>
-          <div class="hint">쉼표(,) 또는 줄바꿈으로 여러 명을 구분해서 입력하세요. 3팀을 비워두면 2팀 대진표로 표시됩니다.</div>
+          <div class="field-label"><span class="chip">C팀 (선택)</span> 팀원 명단</div>
+          <textarea id="matchTeam3" placeholder="C팀 매치가 없으면 비워두세요"></textarea>
+          <div class="hint">쉼표(,) 또는 줄바꿈으로 여러 명을 구분해서 입력하세요. C팀을 비워두면 2팀 대진표로 표시됩니다.</div>
         </div>
         <div class="save-row">
           <span class="toast" id="matchToast"></span>
@@ -916,18 +975,18 @@
         </div>
 
         <div class="fp-admin-block">
-          <div class="field-label" style="margin-bottom:10px;"><span class="chip">🤝 +1점</span> 페어플레이 선수 (팀원 투표 결과)</div>
+          <div class="field-label" style="margin-bottom:10px;"><span class="chip">🪽 +1점</span> 페어플레이 선수 (팀원 투표 결과)</div>
           <button class="btn fp-refresh-btn" id="fpRefreshBtn" type="button">🔄 최신 투표 결과 불러오기</button>
           <div class="field-group">
-            <div class="field-label" style="color:var(--sub);font-size:12px;">1팀 페어플레이 선수</div>
+            <div class="field-label" style="color:var(--sub);font-size:12px;">A팀 페어플레이 선수</div>
             <textarea id="fpTeam1" placeholder="투표 결과가 자동으로 채워집니다 (수정 가능)"></textarea>
           </div>
           <div class="field-group">
-            <div class="field-label" style="color:var(--sub);font-size:12px;">2팀 페어플레이 선수</div>
+            <div class="field-label" style="color:var(--sub);font-size:12px;">B팀 페어플레이 선수</div>
             <textarea id="fpTeam2" placeholder="투표 결과가 자동으로 채워집니다 (수정 가능)"></textarea>
           </div>
           <div class="field-group">
-            <div class="field-label" style="color:var(--sub);font-size:12px;">3팀 페어플레이 선수 (해당 시)</div>
+            <div class="field-label" style="color:var(--sub);font-size:12px;">C팀 페어플레이 선수 (해당 시)</div>
             <textarea id="fpTeam3" placeholder="투표 결과가 자동으로 채워집니다 (수정 가능)"></textarea>
             <div class="hint">동점표는 전원 자동으로 채워져요. 팀에서 투표를 안 했다면 비워두셔도 됩니다. "승점 반영하기"를 누르면 이번 주 페어플레이 투표가 자동으로 마감됩니다.</div>
           </div>
@@ -1030,6 +1089,10 @@ const RULES_KEY = 'mom_team_rules';
 const QUOTE_KEY = 'mom_current_quote';
 const FAIRPLAY_VOTES_KEY = 'mom_fairplay_votes';
 const FAIRPLAY_CLOSED_KEY = 'mom_fairplay_closed';
+const MATCH_UPDATED_KEY = 'mom_match_updated_flag';
+const FINAL_WINNER_KEY = 'mom_final_winner';
+const MATCH_IS_PAST_KEY = 'mom_match_is_past';
+const WINNING_TEAM_KEY = 'mom_winning_team_idx';
 const ADMIN_PW = '112233';
 
 const DEFAULT_ROSTER = [
@@ -1355,8 +1418,8 @@ async function saveHOF(h){ return await saveJSON(HOF_KEY, h); }
 async function loadMatch(){ return await loadJSON(MATCH_KEY, null); }
 async function saveMatch(m){ return await saveJSON(MATCH_KEY, m); }
 
-async function loadNotice(){ return await loadJSON(NOTICE_KEY, ''); }
-async function saveNotice(text){ return await saveJSON(NOTICE_KEY, text); }
+async function loadNotice(){ return await loadJSON(NOTICE_KEY, {text:'', variant:'custom'}); }
+async function saveNotice(text, variant){ return await saveJSON(NOTICE_KEY, {text, variant: variant || 'custom'}); }
 
 async function loadRules(){
   let rules = await loadJSON(RULES_KEY, null);
@@ -1384,6 +1447,38 @@ async function clearFairplayVotes(){ return await saveJSON(FAIRPLAY_VOTES_KEY, n
 
 async function loadFairplayClosed(){ return await loadJSON(FAIRPLAY_CLOSED_KEY, false); }
 async function saveFairplayClosed(closed){ return await saveJSON(FAIRPLAY_CLOSED_KEY, closed); }
+
+async function loadMatchUpdatedFlag(){ return await loadJSON(MATCH_UPDATED_KEY, false); }
+async function saveMatchUpdatedFlag(flag){ return await saveJSON(MATCH_UPDATED_KEY, flag); }
+
+async function loadFinalWinner(){ return await loadJSON(FINAL_WINNER_KEY, null); }
+async function saveFinalWinner(data){ return await saveJSON(FINAL_WINNER_KEY, data); }
+
+async function loadMatchIsPast(){ return await loadJSON(MATCH_IS_PAST_KEY, false); }
+async function saveMatchIsPast(flag){ return await saveJSON(MATCH_IS_PAST_KEY, flag); }
+
+async function loadWinningTeamIdx(){ return await loadJSON(WINNING_TEAM_KEY, null); }
+async function saveWinningTeamIdx(idx){ return await saveJSON(WINNING_TEAM_KEY, idx); }
+
+// true if dateStr (YYYY-MM-DD) falls on the last Sunday of its month
+function isLastSundayOfMonth(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d.getTime())) return false;
+  if(d.getDay() !== 0) return false; // 0 = Sunday
+  const next = new Date(d);
+  next.setDate(d.getDate() + 7);
+  return next.getMonth() !== d.getMonth();
+}
+
+// {year, quarter} for a given YYYY-MM-DD date string
+function quarterYearOf(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const quarter = Math.floor((month - 1) / 3) + 1;
+  return { year, quarter };
+}
+
 
 // returns { [teamIdx]: [winnerName, ...] } — all names tied for most votes on that team (only teams with >=1 vote)
 function computeFairplayWinners(votes){
@@ -1503,6 +1598,8 @@ async function renderBoard(){
 
   const latestEntry = history.length ? history.reduce((a,b)=> (b.ts||0) > (a.ts||0) ? b : a) : null;
   const thisWeekFairplay = new Set(latestEntry ? (latestEntry.fairplay || []) : []);
+  const finalWinner = await loadFinalWinner();
+  const finalWinnerNames = new Set(finalWinner ? (finalWinner.names || []) : []);
 
   boardList.innerHTML = entries.map(([name, score], idx)=>{
     const rank = (idx>0 && entries[idx-1][1]===score) ? entries[idx-1].rank : (idx>0 ? entries[idx-1].rank + 1 : 1);
@@ -1512,10 +1609,11 @@ async function renderBoard(){
     else if(score>0 && rank===2) cls='second';
     else if(score>0 && rank===3) cls='third';
     const badge = badgeForCount(hofCounts[name] || 0);
-    const fairplayBadge = thisWeekFairplay.has(name) ? `<span class="rank-badge" title="이번 주 페어플레이 선수">🤝</span>` : '';
-    return `<div class="rank-row ${cls}">
+    const fairplayBadge = thisWeekFairplay.has(name) ? `<span class="rank-badge" title="이번 주 페어플레이 선수">🪽</span>` : '';
+    const finalWinnerBadge = finalWinnerNames.has(name) ? `<span class="final-winner-tag">🏆 이달의 선수 확정</span>` : '';
+    return `<div class="rank-row ${cls} ${finalWinnerNames.has(name) ? 'final-winner-row' : ''}">
       <div class="rank-num">${rank}</div>
-      <div class="rank-name">${escapeHtml(name)}${badge ? `<span class="rank-badge">${badge}</span>` : ''}${fairplayBadge}</div>
+      <div class="rank-name">${escapeHtml(name)}${badge ? `<span class="rank-badge">${badge}</span>` : ''}${fairplayBadge}${finalWinnerBadge}</div>
       <div class="rank-score">${score}<span>점</span></div>
     </div>`;
   }).join('');
@@ -1527,16 +1625,30 @@ async function renderMatch(){
   const dateNote = document.getElementById('matchDateNote');
   const noticeCard = document.getElementById('noticeCard');
   const noticeText = document.getElementById('noticeText');
+  const updateBadge = document.getElementById('matchUpdateBadge');
+  const headingText = document.getElementById('matchHeadingText');
   display.innerHTML = '<div class="board-empty">불러오는 중...</div>';
   dateNote.textContent = '';
+  updateBadge.style.display = 'none';
 
-  const [match, notice] = await Promise.all([loadMatch(), loadNotice()]);
+  const [match, notice, matchUpdated, isPast] = await Promise.all([loadMatch(), loadNotice(), loadMatchUpdatedFlag(), loadMatchIsPast()]);
+  headingText.textContent = isPast ? '지난 매치' : '이 주의 매치';
 
-  if(notice && notice.trim()){
-    noticeText.textContent = notice;
+  const noticeBanner = document.getElementById('noticeBanner');
+  const noticeIcon = document.getElementById('noticeIcon');
+  if(notice && notice.text && notice.text.trim()){
+    noticeText.textContent = notice.text;
     noticeCard.style.display = 'block';
+    const isStandby = notice.variant === 'standby';
+    noticeText.className = isStandby ? 'notice-text notice-text-standby' : 'notice-text';
+    noticeBanner.className = isStandby ? 'notice-banner notice-banner-standby' : 'notice-banner';
+    noticeIcon.textContent = isStandby ? '⏳' : '📢';
   }else{
     noticeCard.style.display = 'none';
+  }
+
+  if(match && match.mode === 'match' && matchUpdated){
+    updateBadge.style.display = 'inline';
   }
 
   if(!match){
@@ -1559,19 +1671,21 @@ async function renderMatch(){
     return;
   }
 
-  const [votes, fpClosed] = await Promise.all([loadFairplayVotes(), loadFairplayClosed()]);
+  const [votes, fpClosed, history, winningTeamIdx] = await Promise.all([loadFairplayVotes(), loadFairplayClosed(), loadHistory(), loadWinningTeamIdx()]);
+  const latestEntry = history.length ? history.reduce((a,b)=> (b.ts||0) > (a.ts||0) ? b : a) : null;
+  const thisWeekFairplay = new Set((fpClosed && latestEntry) ? (latestEntry.fairplay || []) : []);
 
-  const teamLabels = ['1팀','2팀','3팀'];
+  const teamLabels = ['A팀','B팀','C팀'];
   const cols = teams.map((members, idx) => {
     const memberOptions = members.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
     const teamVotes = votes[idx] || {};
     let voteSection;
     if(fpClosed){
-      voteSection = `<div class="fp-closed">🤝 이번 주 페어플레이 투표는 마감되었습니다</div>`;
+      voteSection = `<div class="fp-closed">🪽 이번 주 페어플레이 투표는 마감되었습니다</div>`;
     }else{
       voteSection = `
         <div class="fp-vote-box" data-team-idx="${idx}">
-          <div class="fp-vote-title">🤝 페어플레이어 투표</div>
+          <div class="fp-vote-title">🪽 페어플레이어 투표</div>
           <div class="fp-vote-subtitle">경기 종료 후 선정해주세요</div>
           <select class="fp-select" id="fpVoter-${idx}">
             <option value="">내 이름</option>
@@ -1586,10 +1700,18 @@ async function renderMatch(){
         </div>
       `;
     }
+    const memberRows = members.map(m=>{
+      const badge = thisWeekFairplay.has(m) ? ` <span class="team-member-badge" title="이번 주 페어플레이어">🪽</span>` : '';
+      return `<div class="team-member">${escapeHtml(m)}${badge}</div>`;
+    }).join('');
+    const winningClass = (winningTeamIdx !== null && winningTeamIdx === idx) ? ' team-col-winner' : '';
+    const teamLabelName = teamLabels[idx] || String.fromCharCode(65+idx)+'팀';
+    const topLabel = winningClass ? 'WINNER' : teamLabelName;
+    const labelClass = winningClass ? 'team-label team-label-winner' : 'team-label';
     return `
-    <div class="team-col">
-      <div class="team-label">${teamLabels[idx] || (idx+1)+'팀'}</div>
-      ${members.map(m=>`<div class="team-member">${escapeHtml(m)}</div>`).join('')}
+    <div class="team-col${winningClass}">
+      <div class="${labelClass}">${topLabel}</div>
+      ${memberRows}
       ${voteSection}
     </div>`;
   });
@@ -1781,7 +1903,7 @@ async function tryUnlock(){
 
     const existingNotice = await loadNotice();
     const noticeInput = document.getElementById('noticeInput');
-    if(!noticeInput.value) noticeInput.value = existingNotice || '';
+    if(!noticeInput.value) noticeInput.value = existingNotice.text || '';
 
     const existingRules = await loadRules();
     const rulesInput = document.getElementById('rulesInput');
@@ -1852,6 +1974,45 @@ document.getElementById('saveBtn').addEventListener('click', async ()=>{
     document.getElementById('fpTeam3').value = '';
     await saveQuote(pickRandomQuote());
     await saveFairplayClosed(true);
+    await saveMatchUpdatedFlag(false);
+    await saveMatchIsPast(true);
+    await saveNotice('승점이 업데이트 되었습니다. 다음 매치업은 경기 하루 전 공개됩니다.', 'standby');
+
+    // figure out which bracket team (A/B/C) matches the 1위(3점) list, to highlight it
+    const currentMatch = await loadMatch();
+    if(currentMatch && currentMatch.teams && first.length){
+      let bestIdx = null, bestOverlap = 0;
+      currentMatch.teams.forEach((members, idx)=>{
+        const overlap = members.filter(m=>first.includes(m)).length;
+        if(overlap > bestOverlap){ bestOverlap = overlap; bestIdx = idx; }
+      });
+      await saveWinningTeamIdx(bestOverlap > 0 ? bestIdx : null);
+    }else{
+      await saveWinningTeamIdx(null);
+    }
+
+    // last Sunday of the month = final tally day: mark this month's #1 (excluding
+    // co-leaders who already won this quarter) as the special confirmed winner
+    if(isLastSundayOfMonth(date)){
+      const updatedHistory = await loadHistory();
+      const totals = computeTotals(updatedHistory);
+      const scores = Object.values(totals);
+      const maxScore = scores.length ? Math.max(...scores) : 0;
+      let topNames = Object.keys(totals).filter(n => totals[n] === maxScore && maxScore > 0);
+      if(topNames.length > 1){
+        const hof = await loadHOF();
+        const { year, quarter } = quarterYearOf(date);
+        topNames = topNames.filter(name=>{
+          const alreadyWonThisQuarter = hof.some(item=>{
+            const meta = parseHofMonth(item.month);
+            return meta.year === year && quarterOf(meta.month) === quarter && (item.winners||[]).includes(name);
+          });
+          return !alreadyWonThisQuarter;
+        });
+      }
+      await saveFinalWinner(topNames.length ? { date, names: topNames } : null);
+    }
+
     renderHistory();
   }else{
     toast.style.color = '#f0a58f';
@@ -1902,6 +2063,7 @@ document.getElementById('resetBtn').addEventListener('click', async ()=>{
   resetToast.textContent = '초기화 중...';
   resetToast.style.color = 'var(--sub)';
   const ok = await saveHistory([]);
+  await saveFinalWinner(null);
   if(ok){
     resetToast.style.color = 'var(--gold-soft)';
     resetToast.textContent = '✅ 모든 선수의 승점이 0점으로 초기화되었습니다.';
@@ -2127,6 +2289,9 @@ document.getElementById('matchSaveBtn').addEventListener('click', async ()=>{
   // new bracket = new week: reset fairplay voting
   await clearFairplayVotes();
   await saveFairplayClosed(false);
+  await saveMatchUpdatedFlag(true);
+  await saveMatchIsPast(false);
+  await saveWinningTeamIdx(null);
   document.getElementById('fpTeam1').value = '';
   document.getElementById('fpTeam2').value = '';
   document.getElementById('fpTeam3').value = '';
@@ -2148,6 +2313,9 @@ document.getElementById('awayBtn').addEventListener('click', async ()=>{
   const ok = await saveMatch({ mode: 'away', date, teams: [] });
   await clearFairplayVotes();
   await saveFairplayClosed(false);
+  await saveMatchUpdatedFlag(false);
+  await saveMatchIsPast(false);
+  await saveWinningTeamIdx(null);
   document.getElementById('fpTeam1').value = '';
   document.getElementById('fpTeam2').value = '';
   document.getElementById('fpTeam3').value = '';
@@ -2170,6 +2338,9 @@ document.getElementById('matchResetBtn').addEventListener('click', async ()=>{
   const noticeOk = await saveNotice('');
   await clearFairplayVotes();
   await saveFairplayClosed(false);
+  await saveMatchUpdatedFlag(false);
+  await saveMatchIsPast(false);
+  await saveWinningTeamIdx(null);
   document.getElementById('fpTeam1').value = '';
   document.getElementById('fpTeam2').value = '';
   document.getElementById('fpTeam3').value = '';
